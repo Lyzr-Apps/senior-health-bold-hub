@@ -1,0 +1,89 @@
+{
+  "workflow_name": "HealthNavigator AI",
+  "workflow_type": "Manager-Subagent + Independent Agent (Hybrid)",
+  "total_agents": 8,
+  "agents": {
+    "manager": {
+      "triage_coordinator_manager": {
+        "agent_id": "6985a4dae2c0086a4fc43be0",
+        "name": "Triage Coordinator Manager",
+        "type": "Manager",
+        "role": "Healthcare Triage Orchestration Manager",
+        "trigger": "Analyze Symptoms on Assessment Page",
+        "managed_agents": [
+          "6985a4528ce1fc653cfdee8c",
+          "6985a4663b50e9c8d7d7e916",
+          "6985a479b37fff3a03c07c7b",
+          "6985a48d76d4fd436bf4b7da",
+          "6985a4a4b37fff3a03c07c7c",
+          "6985a4bb7551cb7920ffe9d1"
+        ]
+      }
+    },
+    "sub_agents": {
+      "symptom_extraction_agent": {
+        "agent_id": "6985a4528ce1fc653cfdee8c",
+        "name": "Symptom Extraction Agent",
+        "type": "Sub-Agent",
+        "role": "Medical Symptom Data Extractor",
+        "trigger": "Auto (via Manager)"
+      },
+      "red_flag_detection_agent": {
+        "agent_id": "6985a4663b50e9c8d7d7e916",
+        "name": "Red Flag Detection Agent",
+        "type": "Sub-Agent",
+        "role": "Medical Emergency Red Flag Detector",
+        "trigger": "Auto (via Manager)"
+      },
+      "risk_scoring_agent": {
+        "agent_id": "6985a479b37fff3a03c07c7b",
+        "name": "Risk Scoring Agent",
+        "type": "Sub-Agent",
+        "role": "Medical Risk Assessment Specialist",
+        "trigger": "Auto (via Manager)"
+      },
+      "specialist_classification_agent": {
+        "agent_id": "6985a48d76d4fd436bf4b7da",
+        "name": "Specialist Classification Agent",
+        "type": "Sub-Agent",
+        "role": "Medical Specialist Routing Classifier",
+        "trigger": "Auto (via Manager)"
+      },
+      "action_planning_agent": {
+        "agent_id": "6985a4a4b37fff3a03c07c7c",
+        "name": "Action Planning Agent",
+        "type": "Sub-Agent",
+        "role": "Healthcare Action Recommendation Planner",
+        "trigger": "Auto (via Manager)"
+      },
+      "safety_reflection_agent": {
+        "agent_id": "6985a4bb7551cb7920ffe9d1",
+        "name": "Safety Reflection Agent",
+        "type": "Sub-Agent",
+        "role": "Medical Safety and Compliance Reviewer",
+        "trigger": "Auto (via Manager)"
+      }
+    },
+    "independent_agents": {
+      "app_assistant_chatbot_agent": {
+        "agent_id": "6985a4f5705117394b71194f",
+        "name": "App Assistant Chatbot Agent",
+        "type": "Independent",
+        "role": "HealthNavigator App Navigation Assistant",
+        "trigger": "Ask Assistant floating button on all pages"
+      }
+    }
+  },
+  "provider": "OpenAI",
+  "model": "gpt-4.1",
+  "created_at": "2026-02-06T00:00:00Z",
+  "status": "active",
+  "hipaa_compliant": true,
+  "safety_features": [
+    "No diagnosis language enforcement",
+    "No medication prescription",
+    "Mandatory safety disclaimers",
+    "Red flag emergency detection",
+    "Safety reflection review"
+  ]
+}

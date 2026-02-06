@@ -6,8 +6,8 @@ import { IframeLoggerInit } from '@/components/IframeLoggerInit'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Next.js App',
-  description: 'Built with Next.js, React, and Tailwind CSS',
+  title: 'HealthNavigator AI - Intelligent Healthcare Triage',
+  description: 'AI-powered symptom assessment and healthcare triage system with specialist recommendations and risk scoring.',
 }
 
 export default function RootLayout({

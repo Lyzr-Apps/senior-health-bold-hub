@@ -1,0 +1,157 @@
+{
+  "workflow": {
+    "name": "HealthNavigator AI",
+    "description": "HIPAA-compliant healthcare triage system with manager-subagent pattern for symptom assessment and independent chatbot for app navigation",
+    "nodes": [
+      {
+        "id": "triage_input_node",
+        "type": "Input",
+        "label": "Symptom Assessment Input",
+        "nodeCategory": "input"
+      },
+      {
+        "id": "triage_manager",
+        "type": "Agent",
+        "label": "Triage Coordinator Manager",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4dae2c0086a4fc43be0"
+      },
+      {
+        "id": "symptom_extraction",
+        "type": "Agent",
+        "label": "Symptom Extraction Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4528ce1fc653cfdee8c"
+      },
+      {
+        "id": "red_flag_detection",
+        "type": "Agent",
+        "label": "Red Flag Detection Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4663b50e9c8d7d7e916"
+      },
+      {
+        "id": "risk_scoring",
+        "type": "Agent",
+        "label": "Risk Scoring Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a479b37fff3a03c07c7b"
+      },
+      {
+        "id": "specialist_classification",
+        "type": "Agent",
+        "label": "Specialist Classification Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a48d76d4fd436bf4b7da"
+      },
+      {
+        "id": "action_planning",
+        "type": "Agent",
+        "label": "Action Planning Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4a4b37fff3a03c07c7c"
+      },
+      {
+        "id": "safety_reflection",
+        "type": "Agent",
+        "label": "Safety Reflection Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4bb7551cb7920ffe9d1"
+      },
+      {
+        "id": "chatbot_input_node",
+        "type": "Input",
+        "label": "Assistant Query Input",
+        "nodeCategory": "input"
+      },
+      {
+        "id": "app_assistant_chatbot",
+        "type": "Agent",
+        "label": "App Assistant Chatbot Agent",
+        "nodeCategory": "agent",
+        "agent_id": "6985a4f5705117394b71194f"
+      },
+      {
+        "id": "triage_output_node",
+        "type": "Output",
+        "label": "Triage Assessment Output",
+        "nodeCategory": "end"
+      },
+      {
+        "id": "chatbot_output_node",
+        "type": "Output",
+        "label": "Assistant Response Output",
+        "nodeCategory": "end"
+      }
+    ],
+    "edges": [
+      {
+        "source": "triage_input_node",
+        "target": "triage_manager"
+      },
+      {
+        "source": "triage_manager",
+        "target": "symptom_extraction"
+      },
+      {
+        "source": "triage_manager",
+        "target": "red_flag_detection"
+      },
+      {
+        "source": "triage_manager",
+        "target": "risk_scoring"
+      },
+      {
+        "source": "triage_manager",
+        "target": "specialist_classification"
+      },
+      {
+        "source": "triage_manager",
+        "target": "action_planning"
+      },
+      {
+        "source": "triage_manager",
+        "target": "safety_reflection"
+      },
+      {
+        "source": "symptom_extraction",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "red_flag_detection",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "risk_scoring",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "specialist_classification",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "action_planning",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "safety_reflection",
+        "target": "triage_output_node"
+      },
+      {
+        "source": "chatbot_input_node",
+        "target": "app_assistant_chatbot"
+      },
+      {
+        "source": "app_assistant_chatbot",
+        "target": "chatbot_output_node"
+      }
+    ]
+  },
+  "metadata": {
+    "total_nodes": 12,
+    "total_edges": 15,
+    "total_agents": 8,
+    "pattern": "Manager-Subagent + Independent Agent (Hybrid)",
+    "created_at": "2026-02-06T00:00:00Z"
+  }
+}
