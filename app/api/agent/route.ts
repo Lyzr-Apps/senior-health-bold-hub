@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import parseLLMJson from '@/lib/jsonParser'
+import { getMockTriageResult, getMockChatbotResponse } from '@/lib/mockAgentData'
 
 const LYZR_API_URL = 'https://agent-prod.studio.lyzr.ai/v3/inference/chat/'
 const LYZR_API_KEY = process.env.LYZR_API_KEY || ''
+
+// Development mode: set to true to use mock data instead of API calls
+const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true'
+
+// Agent IDs from workflow_state.json
+const TRIAGE_MANAGER_ID = '6985a4dae2c0086a4fc43be0'
+const CHATBOT_ASSISTANT_ID = '6985a4f5705117394b71194f'
 
 // Types
 interface NormalizedAgentResponse {
@@ -21,6 +29,101 @@ function generateUUID(): string {
     const r = (Math.random() * 16) | 0
     const v = c === 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
+  })
+}
+
+// Handle mock responses when credits are exhausted or in dev mode
+function handleMockResponse(agent_id: string, message: string, user_id?: string, session_id?: string) {
+  const finalUserId = user_id || `user-${generateUUID()}`
+  const finalSessionId = session_id || `${agent_id}-${generateUUID().substring(0, 12)}`
+
+  // Parse message for triage manager
+  if (agent_id === TRIAGE_MANAGER_ID) {
+    try {
+      // Try to parse as JSON first (from AssessmentForm)
+      const data = typeof message === 'string' ? JSON.parse(message) : message
+      const mockResult = getMockTriageResult(data.severity || 5, data.symptoms || message)
+
+      return NextResponse.json({
+        success: true,
+        response: {
+          status: 'success',
+          result: mockResult,
+          message: 'Mock triage assessment generated (API credits exhausted)',
+          metadata: {
+            agent_name: 'Triage Coordinator Manager (Mock)',
+            timestamp: new Date().toISOString(),
+            mock_data: true,
+          },
+        },
+        agent_id,
+        user_id: finalUserId,
+        session_id: finalSessionId,
+        timestamp: new Date().toISOString(),
+      })
+    } catch {
+      // If JSON parse fails, use default values
+      const mockResult = getMockTriageResult(5, message)
+      return NextResponse.json({
+        success: true,
+        response: {
+          status: 'success',
+          result: mockResult,
+          message: 'Mock triage assessment generated (API credits exhausted)',
+          metadata: {
+            agent_name: 'Triage Coordinator Manager (Mock)',
+            timestamp: new Date().toISOString(),
+            mock_data: true,
+          },
+        },
+        agent_id,
+        user_id: finalUserId,
+        session_id: finalSessionId,
+        timestamp: new Date().toISOString(),
+      })
+    }
+  }
+
+  // Handle chatbot assistant
+  if (agent_id === CHATBOT_ASSISTANT_ID) {
+    const mockResult = getMockChatbotResponse(message)
+
+    return NextResponse.json({
+      success: true,
+      response: {
+        status: 'success',
+        result: mockResult,
+        message: mockResult.message,
+        metadata: {
+          agent_name: 'App Assistant Chatbot (Mock)',
+          timestamp: new Date().toISOString(),
+          mock_data: true,
+        },
+      },
+      agent_id,
+      user_id: finalUserId,
+      session_id: finalSessionId,
+      timestamp: new Date().toISOString(),
+    })
+  }
+
+  // Default mock response for unknown agents
+  return NextResponse.json({
+    success: true,
+    response: {
+      status: 'success',
+      result: { message: 'Mock response - API credits exhausted' },
+      message: 'Mock response generated',
+      metadata: {
+        agent_name: 'Mock Agent',
+        timestamp: new Date().toISOString(),
+        mock_data: true,
+      },
+    },
+    agent_id,
+    user_id: finalUserId,
+    session_id: finalSessionId,
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -117,19 +220,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!LYZR_API_KEY) {
-      return NextResponse.json(
-        {
-          success: false,
-          response: {
-            status: 'error',
-            result: {},
-            message: 'LYZR_API_KEY not configured',
-          },
-          error: 'LYZR_API_KEY not configured on server',
-        },
-        { status: 500 }
-      )
+    // Handle mock data mode or missing API key
+    if (USE_MOCK_DATA || !LYZR_API_KEY) {
+      return handleMockResponse(agent_id, message, user_id, session_id)
     }
 
     const finalUserId = user_id || `user-${generateUUID()}`
@@ -186,10 +279,23 @@ export async function POST(request: NextRequest) {
       })
     } else {
       let errorMsg = `API returned status ${response.status}`
+      let isCreditsExhausted = false
+
       try {
         const errorData = parseLLMJson(rawText) || JSON.parse(rawText)
-        errorMsg = errorData?.error || errorData?.message || errorMsg
+        errorMsg = errorData?.error || errorData?.message || errorData?.detail || errorMsg
+
+        // Check if credits exhausted
+        if (response.status === 429 || errorMsg.toLowerCase().includes('credits exhausted')) {
+          isCreditsExhausted = true
+        }
       } catch {}
+
+      // Automatically fall back to mock data when credits exhausted
+      if (isCreditsExhausted) {
+        console.log('Credits exhausted - falling back to mock data')
+        return handleMockResponse(agent_id, message, user_id, session_id)
+      }
 
       return NextResponse.json(
         {

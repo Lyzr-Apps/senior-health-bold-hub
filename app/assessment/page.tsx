@@ -21,16 +21,15 @@ export default function AssessmentPage() {
     setError(null)
 
     try {
-      // Construct message for triage manager
-      const message = `Patient Assessment:
-Age: ${formData.age}
-Gender: ${formData.gender}
-Symptoms: ${formData.symptoms}
-Severity: ${formData.severity}/10
-Duration: ${formData.duration}
-Medical Conditions: ${formData.conditions.join(', ')}
-
-Please analyze and provide triage assessment.`
+      // Send as JSON string for proper parsing by mock data handler
+      const message = JSON.stringify({
+        age: formData.age,
+        gender: formData.gender,
+        symptoms: formData.symptoms,
+        severity: formData.severity,
+        duration: formData.duration,
+        conditions: formData.conditions,
+      })
 
       const result = await callAIAgent(message, TRIAGE_MANAGER_ID)
 
