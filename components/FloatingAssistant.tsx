@@ -99,7 +99,7 @@ export function FloatingAssistant() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-6 h-14 w-14 rounded-full shadow-lg bg-blue-500 hover:bg-blue-600 z-50"
+        className="fixed bottom-24 right-6 h-14 w-14 rounded-full shadow-lg bg-cyan-500 hover:bg-cyan-600 z-50"
         size="icon"
         aria-label="Open chat assistant"
       >
@@ -110,7 +110,7 @@ export function FloatingAssistant() {
 
   return (
     <Card className="fixed bottom-24 right-6 w-96 h-[500px] shadow-2xl z-50 flex flex-col">
-      <CardHeader className="border-b bg-blue-500 text-white rounded-t-lg flex flex-row items-center justify-between p-4">
+      <CardHeader className="border-b bg-cyan-500 text-white rounded-t-lg flex flex-row items-center justify-between p-4">
         <div className="flex items-center gap-2">
           <FaComments className="text-xl" />
           <CardTitle className="text-lg">App Assistant</CardTitle>
@@ -119,7 +119,7 @@ export function FloatingAssistant() {
           variant="ghost"
           size="icon"
           onClick={() => setIsOpen(false)}
-          className="h-8 w-8 text-white hover:bg-blue-600"
+          className="h-8 w-8 text-white hover:bg-cyan-600"
         >
           <FaTimes />
         </Button>
@@ -146,7 +146,7 @@ export function FloatingAssistant() {
             <div
               className={`max-w-[80%] px-4 py-2 rounded-lg ${
                 msg.role === 'user'
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-cyan-500 text-white'
                   : 'bg-gray-100 text-gray-900'
               }`}
             >
@@ -184,7 +184,7 @@ export function FloatingAssistant() {
             onClick={handleSendMessage}
             disabled={loading || !inputValue.trim()}
             size="icon"
-            className="bg-blue-500 hover:bg-blue-600"
+            className="bg-cyan-500 hover:bg-cyan-600"
           >
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
