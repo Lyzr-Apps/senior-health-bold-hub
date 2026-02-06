@@ -99,8 +99,9 @@ export function FloatingAssistant() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-blue-500 hover:bg-blue-600 z-50"
+        className="fixed bottom-24 right-6 h-14 w-14 rounded-full shadow-lg bg-blue-500 hover:bg-blue-600 z-50"
         size="icon"
+        aria-label="Open chat assistant"
       >
         <FaComments className="text-xl text-white" />
       </Button>
@@ -108,7 +109,7 @@ export function FloatingAssistant() {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-2xl z-50 flex flex-col">
+    <Card className="fixed bottom-24 right-6 w-96 h-[500px] shadow-2xl z-50 flex flex-col">
       <CardHeader className="border-b bg-blue-500 text-white rounded-t-lg flex flex-row items-center justify-between p-4">
         <div className="flex items-center gap-2">
           <FaComments className="text-xl" />
